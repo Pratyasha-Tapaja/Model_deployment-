@@ -97,8 +97,14 @@ def get_intensity_info(scaled_ii):
     # If above 10, treat as Very High
     return INTENSITY_INFO[-1]
 
-@app.route('/predict', methods=['POST'])
+@app.route("/predict", methods=["GET", "POST"])
 def predict():
+    if request.method == "GET":
+        return "This is a GET request. Please POST your JSON!"
+    elif request.method == "POST":
+        data = request.get_json()
+        return jsonify({"result": "POST success", "received": data})
+
     data = request.json
 
     # 7 user inputs
