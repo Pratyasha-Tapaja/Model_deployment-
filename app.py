@@ -2,8 +2,11 @@
 from flask import Flask, request, jsonify
 import joblib
 import math
+from flask_cors import CORS   # ✅ Add this!
 
 app = Flask(__name__)
+CORS(app)                     # ✅ Add this!
+
 
 # Load your trained model
 model = joblib.load("lgbm_final_model.joblib")
