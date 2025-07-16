@@ -101,41 +101,39 @@ def get_intensity_info(scaled_ii):
 def predict():
     if request.method == "GET":
         return "This is a GET request. Please POST your JSON!"
+
     elif request.method == "POST":
         data = request.get_json()
-        return jsonify({"result": "POST success", "received": data})
 
-    data = request.json
+        # 7 user inputs
+        age = data['Age']
+        gender = data['Gender']  # 0 = male, 1 = female
+        height = data['Height']
+        weight = data['Weight']
+        bmi = data['BMI']
+        duration = data['Duration']
+        heart_rate = data['Heart_Rate']
 
-    # 7 user inputs
-    age = data['Age']
-    gender = data['Gender']  # 0 = male, 1 = female
-    height = data['Height']
-    weight = data['Weight']
-    bmi = data['BMI']
-    duration = data['Duration']
-    heart_rate = data['Heart_Rate']
+        # Calculate II & scaled II
+        ii, scaled_ii = calculate_scaled_intensity_index(heart_rate, duration, weight)
 
-    # Calculate II & scaled II
-    ii, scaled_ii = calculate_scaled_intensity_index(heart_rate, duration, weight)
+        # Get Level + Description + Examples
+        intensity_info = get_intensity_info(scaled_ii)
 
-    # Get Level + Description + Examples
-    intensity_info = get_intensity_info(scaled_ii)
+        # Final model input
+        input_features = [[
+            age, gender, height, weight, bmi, duration, scaled_ii, heart_rate
+        ]]
 
-    # Final model input
-    input_features = [[
-        age, gender, height, weight, bmi, duration, scaled_ii, heart_rate
-    ]]
+        prediction = model.predict(input_features)[0]
 
-    prediction = model.predict(input_features)[0]
-
-    return jsonify({
-        'predicted_calories': prediction,
-        'scaled_intensity_index': scaled_ii,
-        'intensity_level': intensity_info["level"],
-        'intensity_description': intensity_info["description"],
-        'intensity_examples': intensity_info["examples"]
-    })
+        return jsonify({
+            'predicted_calories': prediction,
+            'scaled_intensity_index': scaled_ii,
+            'intensity_level': intensity_info["level"],
+            'intensity_description': intensity_info["description"],
+            'intensity_examples': intensity_info["examples"]
+        })
 
 if __name__ == '__main__':
     app.run(debug=True)
