@@ -1,5 +1,7 @@
-Flask==2.3.2
-joblib==1.4.0
-scikit-learn==1.4.2
-lightgbm==4.3.0
-gunicorn==21.2.0
+Flask
+joblib
+scikit-learn
+lightgbm
+gunicorn
+numpy
+pandas
